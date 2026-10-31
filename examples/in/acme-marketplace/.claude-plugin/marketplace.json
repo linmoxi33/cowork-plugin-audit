@@ -1,0 +1,8 @@
+{
+  "name": "acme-marketplace",
+  "owner": {"name": "Acme"},
+  "plugins": [
+    {"name": "alpha", "source": "./alpha", "description": "Alpha plugin"},
+    {"name": "beta", "source": "./beta", "description": "Beta plugin long description"}
+  ]
+}

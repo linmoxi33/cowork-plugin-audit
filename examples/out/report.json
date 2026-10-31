@@ -1,0 +1,72 @@
+{
+  "root": "examples/in/acme-marketplace",
+  "summary": {
+    "plugins_audited": 2,
+    "skills": 2,
+    "commands": 1,
+    "findings": 7,
+    "by_severity": {
+      "error": 2,
+      "warning": 4,
+      "info": 1
+    },
+    "by_rule": {
+      "L001": 1,
+      "L002": 1,
+      "M006": 1,
+      "M007": 1,
+      "M008": 1,
+      "P001": 1,
+      "S005": 1
+    }
+  },
+  "findings": [
+    {
+      "rule": "L001",
+      "severity": "error",
+      "path": "alpha/skills/thing/SKILL.md",
+      "message": "link resolves in the repo but its target is outside the installed component set, so it breaks after install",
+      "line": 7,
+      "target": "../../CONNECTORS.md"
+    },
+    {
+      "rule": "L002",
+      "severity": "error",
+      "path": "alpha/skills/thing/SKILL.md",
+      "message": "relative link target does not exist anywhere in the repo",
+      "line": 8,
+      "target": "./missing.md"
+    },
+    {
+      "rule": "M006",
+      "severity": "warning",
+      "path": "beta/.claude-plugin/plugin.json",
+      "message": "description differs between marketplace.json and plugin.json (drift)"
+    },
+    {
+      "rule": "M007",
+      "severity": "warning",
+      "path": "gamma",
+      "message": "plugin manifest present but directory is not listed in marketplace.json"
+    },
+    {
+      "rule": "M008",
+      "severity": "warning",
+      "path": "beta/.claude-plugin/plugin.json",
+      "message": "plugin.json has no version"
+    },
+    {
+      "rule": "P001",
+      "severity": "info",
+      "path": "alpha/skills/thing/SKILL.md",
+      "message": "unresolved '~~' placeholder token in an installed file",
+      "line": 9
+    },
+    {
+      "rule": "S005",
+      "severity": "warning",
+      "path": "alpha",
+      "message": "skill name 'thing' is defined in 2 plugins; the loader keeps one silently"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+# Connectors
+
+Placeholder conventions.

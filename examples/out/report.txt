@@ -1,0 +1,9 @@
+cowork-plugin-audit: examples/in/acme-marketplace
+plugins=2 skills=2 commands=1 findings=7 (error=2 warning=4 info=1)
+error L001     alpha/skills/thing/SKILL.md:7: link resolves in the repo but its target is outside the installed component set, so it breaks after install -> ../../CONNECTORS.md
+error L002     alpha/skills/thing/SKILL.md:8: relative link target does not exist anywhere in the repo -> ./missing.md
+warning M006     beta/.claude-plugin/plugin.json: description differs between marketplace.json and plugin.json (drift)
+warning M007     gamma: plugin manifest present but directory is not listed in marketplace.json
+warning M008     beta/.claude-plugin/plugin.json: plugin.json has no version
+info  P001     alpha/skills/thing/SKILL.md:9: unresolved '~~' placeholder token in an installed file
+warning S005     alpha: skill name 'thing' is defined in 2 plugins; the loader keeps one silently
