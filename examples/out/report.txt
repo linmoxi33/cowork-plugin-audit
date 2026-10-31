@@ -6,4 +6,4 @@ warning M006     beta/.claude-plugin/plugin.json: description differs between ma
 warning M007     gamma: plugin manifest present but directory is not listed in marketplace.json
 warning M008     beta/.claude-plugin/plugin.json: plugin.json has no version
 info  P001     alpha/skills/thing/SKILL.md:9: unresolved '~~' placeholder token in an installed file
-warning S005     alpha: skill name 'thing' is defined in 2 plugins; the loader keeps one silently
+warning S005     alpha: skill name 'thing' is defined in 2 plugins; ownership is ambiguous and the two descriptions compete for the same trigger

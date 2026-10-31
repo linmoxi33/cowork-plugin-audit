@@ -21,6 +21,7 @@ Everything else in a plugin directory is **not** part of that layout. Yet skill 
 - Issue [#1381](https://github.com/anthropics/knowledge-work-plugins/issues/1381) — *"Skills link to ../../CONNECTORS.md, which isn't installed when plugins are added on claude.ai"*; the follow-up PR [#1389](https://github.com/anthropics/knowledge-work-plugins/pull/1389) proposes documenting the convention inline because the link does not survive installation.
 - Issue [#933](https://github.com/anthropics/knowledge-work-plugins/issues/933) (has a reaction) — connectors are declared in one place and described in another, so the two writes disagree.
 - Issue [#71](https://github.com/anthropics/knowledge-work-plugins/issues/71) — `~~placeholder` strings reach users verbatim.
+- Issue [#1382](https://github.com/anthropics/knowledge-work-plugins/issues/1382) — skill descriptions overlap across plugins and nothing decides which one fires.
 
 Nothing in the repo checks any of this, because a normal link checker resolves against the **repo** root, where `../../CONNECTORS.md` exists. Two failure classes hide there, and both are only visible if you model the install boundary:
 
@@ -34,7 +35,7 @@ Does, offline and with zero dependencies:
 - resolves every markdown link in `skills/`, `commands/`, `agents/` against the **simulated installed layout** and splits findings into `L001` (resolves in repo, breaks after install) and `L002` (dangling everywhere);
 - cross-checks `marketplace.json` ↔ each local `plugin.json` (name/description drift, missing version, missing source path, unpinned remote `sha`);
 - flags plugin directories carrying a manifest that the marketplace never lists (`M007`);
-- finds the same skill/command name defined by **two different plugins** — the loader keeps one silently (`S005`/`S006`);
+- finds the same skill/command name defined by **two different plugins** — ownership is ambiguous and the descriptions compete for one trigger (`S005`/`S006`, the same class the upstream reports in [#1382](https://github.com/anthropics/knowledge-work-plugins/issues/1382));
 - flags `~~placeholder` tokens as `info` (never changes the exit code).
 
 Does not: fetch anything, follow remote `git-subdir` sources, validate MCP server behaviour, or claim to fix upstream.
@@ -58,7 +59,7 @@ warning M006     beta/.claude-plugin/plugin.json: description differs between ma
 warning M007     gamma: plugin manifest present but directory is not listed in marketplace.json
 warning M008     beta/.claude-plugin/plugin.json: plugin.json has no version
 info  P001     alpha/skills/thing/SKILL.md:9: unresolved '~~' placeholder token in an installed file
-warning S005     alpha: skill name 'thing' is defined in 2 plugins; the loader keeps one silently
+warning S005     alpha: skill name 'thing' is defined in 2 plugins; ownership is ambiguous and the two descriptions compete for the same trigger
 ```
 
 Machine-readable output (`examples/out/report.json` is the committed expected file):
@@ -103,7 +104,7 @@ $ python3 cowork_plugin_audit.py /path/to/knowledge-work-plugins --json
 | S001 / S002 | error | `SKILL.md` frontmatter missing / has no name |
 | S003 | warning | frontmatter name ≠ directory name |
 | S004 | warning | frontmatter has no description |
-| S005 / S006 | warning | same skill/command name in two plugins (silent shadowing) |
+| S005 / S006 | warning | same skill/command name in two plugins (ambiguous ownership) |
 | L001 | error | link resolves in repo but breaks after install |
 | L002 | error | link target missing everywhere |
 | P001 | info | unresolved `~~` placeholder in an installed file |
@@ -116,7 +117,7 @@ python3 -m unittest discover -s tests -v   # 21 tests, 12 behavioural
 
 ## 本轮创新
 
-**First check that resolves plugin links against the simulated installed layout instead of the repository root.** Existing link checkers (and the upstream's own CI) see `../../CONNECTORS.md` as valid, because the file exists in the monorepo; this tool models what the installer actually copies and therefore reports the 104 references that can never resolve after `claude plugin install` — then merges that "silent degradation" chain with "double-write drift" (`marketplace.json` vs `plugin.json`) and cross-plugin name shadowing into one rule chain. The number 104 is a new, reproducible reading about the upstream, not a restatement of its README.
+**First check that resolves plugin links against the simulated installed layout instead of the repository root.** Existing link checkers (and the upstream's own CI) see `../../CONNECTORS.md` as valid, because the file exists in the monorepo; this tool models what the installer actually copies and therefore reports the 104 references that can never resolve after `claude plugin install` — then merges that "silent degradation" chain with "double-write drift" (`marketplace.json` vs `plugin.json`) and cross-plugin name-ownership ambiguity into one rule chain. The number 104 is a new, reproducible reading about the upstream, not a restatement of its README.
 
 ## 与同类项目的差异
 

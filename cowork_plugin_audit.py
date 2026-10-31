@@ -203,7 +203,8 @@ def _cross_plugin_dupes(findings, root, files, rule, kind):
         if len(plisted) > 1:
             rel = os.path.relpath(sorted(plisted)[0], root).replace(os.sep, "/")
             findings.append(_findings(rule, "warning", rel,
-                                      "%s name %r is defined in %d plugins; the loader keeps one silently"
+                                      "%s name %r is defined in %d plugins; ownership is ambiguous and "
+                                      "the two descriptions compete for the same trigger"
                                       % (kind, stem, len(plisted))))
 
 
